@@ -19,6 +19,7 @@ include guile.am
 moddir=@guilemoduledir@
 godir=@guileobjectdir@
 datadir=@datarootdir@
+dynamicdatadir=@dynamicdatadir@
 
 SOURCES =                                               \
   www/util.scm                                          \
@@ -89,7 +90,8 @@ GUILD_COMPILE_FLAGS = -Wformat -Wunbound-variable -Warity-mismatch
 # path
 www/config.scm: www/config.scm.in
 	$(MKDIR_P) www
-	$(SED) -e 's,@''datarootdir''@,$(abs_top_srcdir),g' \
+	$(SED) -e 's,%www-root\(.*\)@''datarootdir''@,%www-root\1$(abs_top_srcdir),g'				\
+	       -e 's,%www-dynamic-root\(.*\)@''dynamicrootdir''@,%www-dynamic-root\1$(abs_top_srcdir),g'	\
 	       < $< > $@.tmp
 	mv $@.tmp $@
 
@@ -111,7 +113,8 @@ install-exec-hook:
 
 # Relocate static file path in 'www/config.scm'.
 install-data-hook:
-	$(SED) -e 's,$(abs_top_srcdir),$(datadir)/hpcguix-web,g' \
+	$(SED) -e 's,%www-root\(.*\)$(abs_top_srcdir),%www-root\1$(datadir)/hpcguix-web,g'		\
+	       -e 's,%www-dynamic-root\(.*\)$(abs_top_srcdir),%www-dynamic-root\1$(dynamicdatadir),g'	\
 	       $(DESTDIR)$(moddir)/www/config.scm -i
 
 # Build 'run' by default.  Compile it so we get warnings.

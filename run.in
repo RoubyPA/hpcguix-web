@@ -81,8 +81,8 @@
                        (lambda (port) (commonmark->sxml port)))) port))))))
 
 (define (request-packages-json-handler request)
-  (let* ((packages-file (string-append %www-root "/packages.json"))
-         (cache-timeout-file (string-append %www-root "/cache.timeout"))
+  (let* ((packages-file         (string-append %www-dynamic-root "/packages.json"))
+         (cache-timeout-file    (string-append %www-dynamic-root "/cache.timeout"))
          (cache-timeout-exists? (access? cache-timeout-file F_OK)))
     ;; Write the packages JSON to disk to speed up the page load.
     ;; This caching mechanism prevents new packages from propagating
@@ -138,7 +138,10 @@
   (define path
     (uri-path (request-uri request)))
 
-  (let* ((full-path (string-append %www-root "/" path))
+  (let* ((package-json "/packages.json")
+         (full-path (if (string= path package-json)
+                        (string-append %www-dynamic-root package-json)
+                        (string-append %www-root "/" path)))
          (file-stat (stat full-path #f))
          (modified  (and file-stat
                          (make-time time-utc
