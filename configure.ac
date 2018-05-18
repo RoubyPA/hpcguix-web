@@ -32,10 +32,8 @@ AM_CONDITIONAL([HAVE_UGLIFYJS], [test "x$UGLIFYJS" != "x"])
 
 guilemoduledir="${datarootdir}/guile/site/$GUILE_EFFECTIVE_VERSION"
 guileobjectdir="${libdir}/guile/$GUILE_EFFECTIVE_VERSION/site-ccache"
-dynamicdatadir="/var/hpcguix-web"
 AC_SUBST([guilemoduledir])
 AC_SUBST([guileobjectdir])
-AC_SUBST([dynamicdatadir])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([env], [chmod +x env])

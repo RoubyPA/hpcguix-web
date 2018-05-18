@@ -29,6 +29,7 @@
              (guix packages)
              (guix records)
              (guix utils)
+             (guix build utils)
              (ice-9 getopt-long)
              (ice-9 match)
              (ice-9 rdelim)
@@ -138,9 +139,9 @@
   (define path
     (uri-path (request-uri request)))
 
-  (let* ((package-json "/packages.json")
-         (full-path (if (string= path package-json)
-                        (string-append %www-dynamic-root package-json)
+  (let* ((packages-json "/packages.json")
+         (full-path (if (string= path packages-json)
+                        (string-append %www-dynamic-root packages-json)
                         (string-append %www-root "/" path)))
          (file-stat (stat full-path #f))
          (modified  (and file-stat
@@ -279,7 +280,11 @@
 ;;
 ;; This code runs the web server.
 
+(define (mkdir-www-dynamic-root)
+  (mkdir-p %www-dynamic-root))
+
 (define (run-web-interface)
+  (mkdir-www-dynamic-root)
   (format #t "The web page is available at  http://127.0.0.1:~a/.~%"
           %www-listen-port)
   (run-server request-handler 'http
